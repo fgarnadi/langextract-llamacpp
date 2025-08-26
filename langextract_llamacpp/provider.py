@@ -1,6 +1,5 @@
 """Provider implementation for LlamaCpp."""
 
-import concurrent.futures
 import ctypes
 from typing import cast
 
@@ -92,36 +91,9 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
         Yields:
             Lists of ScoredOutput objects, one per prompt.
         """
-        # Use parallel processing for batches larger than 1
-        if len(batch_prompts) > 1 and self.max_workers > 1:
-            with concurrent.futures.ThreadPoolExecutor(
-                max_workers=min(self.max_workers, len(batch_prompts))
-            ) as executor:
-                future_to_index = {
-                    executor.submit(self._process_single_prompt, prompt): i
-                    for i, prompt in enumerate(batch_prompts)
-                }
-
-                results: list[lx.inference.ScoredOutput | None] = [None] * len(
-                    batch_prompts
-                )
-                for future in concurrent.futures.as_completed(future_to_index):
-                    index = future_to_index[future]
-                    try:
-                        results[index] = future.result()
-                    except Exception as e:
-                        raise lx.exceptions.InferenceRuntimeError(
-                            f"Parallel inference error: {str(e)}", original=e
-                        ) from e
-
-                for result in results:
-                    if result is None:
-                        raise lx.exceptions.InferenceRuntimeError(
-                            "Failed to process one or more prompts"
-                        )
-                    yield [result]
-        else:
-            # Sequential processing for single prompt or worker
-            for prompt in batch_prompts:
-                result = self._process_single_prompt(prompt)
-                yield [result]
+        # TODO : use batched inference for len(batch_prompts) > 1
+        # https://github.com/abetlen/llama-cpp-python/issues/771
+        # currently only support sequential processing
+        for prompt in batch_prompts:
+            result = self._process_single_prompt(prompt)
+            yield [result]
