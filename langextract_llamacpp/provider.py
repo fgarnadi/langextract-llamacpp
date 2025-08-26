@@ -42,12 +42,15 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
         self.filename = ids[2] if len(ids) > 2 else None
         self.max_workers = max_workers
 
-        self._extra_kwargs = kwargs
+        self._completion_kwargs = kwargs.pop("completion_kwargs", {})
+        self._completion_kwargs["stream"] = False  # Disable stream
+
+        self._client_kwargs = kwargs
         self._client = Llama.from_pretrained(
             repo_id=self.repo_id,
             filename=self.filename,
             verbose=verbose,
-            **self._extra_kwargs,
+            **self._client_kwargs,
         )
 
     def _suppress_logger(self):
@@ -67,7 +70,7 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
         try:
             response = self._client.create_chat_completion(
                 messages=[{"role": "user", "content": prompt}],
-                stream=False,  # disable stream
+                **self._completion_kwargs,
             )
 
             response = cast(CreateChatCompletionResponse, response)
