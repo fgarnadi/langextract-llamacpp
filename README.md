@@ -1,6 +1,6 @@
-# LangExtract LlamaCpp Provider
+# LangExtract llama-cpp-python Provider
 
-A provider plugin for LangExtract that supports LlamaCpp models.
+A provider plugin for LangExtract that supports llama-cpp-python models.
 
 ## Installation
 
