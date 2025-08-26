@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "langextract-llamacpp"
+version = "0.1.0"
+description = "LangExtract provider plugin for LlamaCpp"
+readme = "README.md"
+authors = [{ name = "fgarnadi", email = "fajar.garnadi@gmail.com" }]
+requires-python = ">=3.10"
+license = "MIT"
+dependencies = [
+    "langextract>=1.0.0",
+    "llama-cpp-python>=0.3.16",
+    "huggingface-hub>=0.34.4",
+]
+
+[project.entry-points."langextract.providers"]
+llamacpp = "langextract_llamacpp.provider:LlamaCppLanguageModel"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["langextract_llamacpp*"]
