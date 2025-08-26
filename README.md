@@ -12,12 +12,15 @@ pip install -e .
 
 Model ID using the format as such:
 
-1. With file name: `hf:<hf_repo_id>:<filename>`
-2. Without file name: `hf:<hf_repo_id>`, in this case the filename will be `None`.
+1. HuggingFace repo with file name: `hf:<hf_repo_id>:<filename>`
+2. HuggingFace repo without file name: `hf:<hf_repo_id>`, in this case the filename will be `None`
+3. Local file: `file:<path_to_model>`
 
 `hf_repo_id` is existing huggingface model repository.
 
 ## Usage
+
+Using HuggingFace repository; this will call `.from_pretrained(...)`
 
 ```python
 import langextract as lx
@@ -29,7 +32,10 @@ config = lx.factory.ModelConfig(
         n_gpu_layers=-1,
         n_ctx=4096,
         verbose=False,
-        max_workers=2,
+        completion_kwargs=dict(
+            temperature=1.1,
+            seed=42,
+        ),
     ),
 )
 
@@ -40,6 +46,22 @@ result = lx.extract(
     prompt_description="Extract entities",
     examples=[...]
 )
+```
+
+Using local file path
+
+```python
+import langextract as lx
+
+config = lx.factory.ModelConfig(
+    model_id="file:Mistral-7B-Instruct-v0.3.Q4_K_M.gguf",
+    provider="LlamaCppLanguageModel", # optional as file: will resolve to the model
+    provider_kwargs=dict(
+        ...
+    ),
+)
+
+...
 ```
 
 ## Development

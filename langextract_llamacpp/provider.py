@@ -11,12 +11,17 @@ from llama_cpp import (
     llama_log_set,
 )
 
+LLAMACPP_PATTERNS = (
+    r"^hf",
+    r"^file",
+)
 
-@lx.providers.registry.register(r"^hf", priority=10)
+
+@lx.providers.registry.register(*LLAMACPP_PATTERNS, priority=10)
 class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
-    """LangExtract provider for LlamaCpp.
+    """LangExtract provider for llama-cpp-python.
 
-    This provider handles model IDs matching: ['^hf']
+    This provider handles model IDs matching: ['^hf', '^file']
     """
 
     def __init__(
@@ -36,21 +41,53 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
 
         super().__init__()
 
-        ids = model_id.split(":")
-        self.repo_id = ids[1]
-        self.filename = ids[2] if len(ids) > 2 else None
+        self.model_id = model_id
         self.max_workers = max_workers
+        self.verbose = verbose
 
         self._completion_kwargs = kwargs.pop("completion_kwargs", {})
         self._completion_kwargs["stream"] = False  # Disable stream
 
         self._client_kwargs = kwargs
-        self._client = Llama.from_pretrained(
-            repo_id=self.repo_id,
-            filename=self.filename,
-            verbose=verbose,
-            **self._client_kwargs,
-        )
+
+        self._initialize_client()
+
+    def _initialize_client(self):
+        """Initialize the llama-cpp client based on the model_id pattern.
+
+        Parses the model_id and creates the appropriate Llama client instance.
+        Supported patterns:
+            - "hf:repo_id:filename"
+            - "hf:repo_id"
+            - "file:model_path"
+
+        Raises:
+            lx.exceptions.InferenceConfigError: If the model_id does not match a known pattern.
+        """
+        match self.model_id.split(":"):
+            case ("hf", repo_id, filename):
+                self._client = Llama.from_pretrained(
+                    repo_id=repo_id,
+                    filename=filename,
+                    verbose=self.verbose,
+                    **self._client_kwargs,
+                )
+            case ("hf", repo_id):
+                self._client = Llama.from_pretrained(
+                    repo_id=repo_id,
+                    verbose=self.verbose,
+                    **self._client_kwargs,
+                )
+            case ("file", model_path):
+                self._client = Llama(
+                    model_path=model_path,
+                    verbose=self.verbose,
+                    **self._client_kwargs,
+                )
+            case _:
+                raise lx.exceptions.InferenceConfigError(
+                    "Can't find `model_id` configuration pattern."
+                )
 
     def _suppress_logger(self):
         """Suppress llama-cpp logger.

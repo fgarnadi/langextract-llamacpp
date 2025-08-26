@@ -3,6 +3,7 @@
 
 import re
 import sys
+
 import langextract as lx
 from langextract.providers import registry
 
@@ -15,14 +16,16 @@ except ImportError:
 lx.providers.load_plugins_once()
 
 PROVIDER_CLS_NAME = "LlamaCppLanguageModel"
-PATTERNS = ['^hf']
+PATTERNS = ["^hf", "^file"]
+
 
 def _example_id(pattern: str) -> str:
     """Generate test model ID from pattern."""
-    base = re.sub(r'^\^', '', pattern)
+    base = re.sub(r"^\^", "", pattern)
     m = re.match(r"[A-Za-z0-9._-]+", base)
     base = m.group(0) if m else (base or "model")
     return f"{base}:MaziyarPanahi/Mistral-7B-Instruct-v0.3-GGUF:*Q4_K_M.gguf"
+
 
 sample_ids = [_example_id(p) for p in PATTERNS]
 sample_ids.append("unknown-model")
@@ -37,8 +40,18 @@ for model_id in sample_ids:
         provider_class = registry.resolve(model_id)
         ok = provider_class.__name__ == PROVIDER_CLS_NAME
         status = "✓" if (ok or model_id == "unknown-model") else "✗"
-        note = "expected" if ok else ("expected (no provider)" if model_id == "unknown-model" else "unexpected provider")
-        print(f"   {status} {model_id} -> {provider_class.__name__ if ok else 'resolved'} {note}")
+        note = (
+            "expected"
+            if ok
+            else (
+                "expected (no provider)"
+                if model_id == "unknown-model"
+                else "unexpected provider"
+            )
+        )
+        print(
+            f"   {status} {model_id} -> {provider_class.__name__ if ok else 'resolved'} {note}"
+        )
     except Exception as e:
         if model_id == "unknown-model":
             print(f"   ✓ {model_id}: No provider found (expected)")
@@ -48,7 +61,11 @@ for model_id in sample_ids:
 # 3. Inference sanity check
 print("\n3. Test inference with sample prompts")
 try:
-    model_id = sample_ids[0] if sample_ids[0] != "unknown-model" else (_example_id(PATTERNS[0]) if PATTERNS else "test-model")
+    model_id = (
+        sample_ids[0]
+        if sample_ids[0] != "unknown-model"
+        else (_example_id(PATTERNS[0]) if PATTERNS else "test-model")
+    )
     provider = LlamaCppLanguageModel(model_id=model_id)
     prompts = ["Test prompt 1", "Test prompt 2"]
     results = list(provider.infer(prompts))
@@ -56,9 +73,9 @@ try:
     for i, result in enumerate(results):
         try:
             out = result[0].output if result and result[0] else None
-            print(f"   ✓ Result {i+1}: {(out or '')[:60]}...")
+            print(f"   ✓ Result {i + 1}: {(out or '')[:60]}...")
         except Exception:
-            print(f"   ✗ Result {i+1}: Unexpected result shape: {result}")
+            print(f"   ✗ Result {i + 1}: Unexpected result shape: {result}")
 except Exception as e:
     print(f"   ✗ ERROR: {e}")
 
@@ -66,9 +83,10 @@ except Exception as e:
 print("\n5. Test factory integration")
 try:
     from langextract import factory
+
     config = factory.ModelConfig(
         model_id=_example_id(PATTERNS[0]) if PATTERNS else "test-model",
-        provider="LlamaCppLanguageModel"
+        provider="LlamaCppLanguageModel",
     )
     model = factory.create_model(config)
     print(f"   ✓ Factory created: {type(model).__name__}")
