@@ -64,6 +64,28 @@ config = lx.factory.ModelConfig(
 ...
 ```
 
+## OpenAI compatible Web Server
+
+When using llama-cpp-python server (or llama.cpp), you can use `OpenAILanguageModel` in the provider field as they implement OpenAI compatible web server.
+
+To set this up, choose `OpenAILanguageModel` as the provider and supply the server’s base URL and an API key (any value) in `provider_kwargs`. The `model_id` field is optional.
+
+```python
+config = lx.factory.ModelConfig(
+    model_id="local", # optional
+    provider="OpenAILanguageModel", # Explicitly set the provider to `OpenAILanguageModel`
+    provider_kwargs=dict(
+        base_url="http://localhost:8000/v1/",
+        api_key="llama-cpp", # Any value; mandatory
+    ),
+)
+
+result = lx.extract(
+    config=config,
+    ...
+)
+```
+
 ## Development
 
 1. Install in development mode: `pip install -e .`
