@@ -5,7 +5,7 @@ A provider plugin for LangExtract that supports llama-cpp-python models.
 ## Installation
 
 ```bash
-pip install -e .
+pip install langextract-llamacpp
 ```
 
 ## Supported Model IDs
@@ -20,7 +20,7 @@ Model ID using the format as such:
 
 ## Usage
 
-Using HuggingFace repository; this will call `.from_pretrained(...)`
+Using HuggingFace repository; this will call `Llama.from_pretrained(...)`.
 
 ```python
 import langextract as lx
@@ -41,14 +41,13 @@ config = lx.factory.ModelConfig(
 
 result = lx.extract(
     config=config,
-    text="Your document here",
-    model_id="llamacpp-model",
+    text_or_documents="Your input text",
     prompt_description="Extract entities",
-    examples=[...]
+    examples=[...],
 )
 ```
 
-Using local file path
+Using local file path; this will call `Llama(...)`.
 
 ```python
 import langextract as lx
@@ -64,6 +63,10 @@ config = lx.factory.ModelConfig(
 ...
 ```
 
+For `provider_kwargs` refer to [documentation](https://llama-cpp-python.readthedocs.io/en/latest/api-reference/#llama_cpp.Llama.__init__) for `Llama` class.
+
+For `completion_kwargs` refer to [documentation](https://llama-cpp-python.readthedocs.io/en/latest/api-reference/#llama_cpp.Llama.create_chat_completion) for `crate_chat_completion` method.
+
 ## OpenAI compatible Web Server
 
 When using llama-cpp-python server (or llama.cpp), you can use `OpenAILanguageModel` in the provider field as they implement OpenAI compatible web server.
@@ -73,10 +76,10 @@ To set this up, choose `OpenAILanguageModel` as the provider and supply the serv
 ```python
 config = lx.factory.ModelConfig(
     model_id="local", # optional
-    provider="OpenAILanguageModel", # Explicitly set the provider to `OpenAILanguageModel`
+    provider="OpenAILanguageModel", # explicitly set the provider to `OpenAILanguageModel`
     provider_kwargs=dict(
         base_url="http://localhost:8000/v1/",
-        api_key="llama-cpp", # Any value; mandatory
+        api_key="llama-cpp", # any value; mandatory
     ),
 )
 
@@ -88,7 +91,7 @@ result = lx.extract(
 
 ## Development
 
-1. Install in development mode: `pip install -e .`
-2. Run tests: `python test_plugin.py`
-3. Build package: `python -m build`
-4. Publish to PyPI: `twine upload dist/*`
+1. Install in development mode: `uv pip install -e .`
+2. Run tests: `uv run test_plugin.py`
+3. Build package: `uv build`
+4. Publish to PyPI: `uv publish`
