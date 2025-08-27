@@ -35,7 +35,8 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
 
         Args:
             model_id: The model identifier.
-            max_workers: The maximum number of workers to use for parallel inference.
+            max_workers: The maximum number of workers to use for parallel
+                inference.
             **kwargs: Additional provider-specific parameters.
         """
 
@@ -62,7 +63,8 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
             - "file:model_path"
 
         Raises:
-            lx.exceptions.InferenceConfigError: If the model_id does not match a known pattern.
+            lx.exceptions.InferenceConfigError: If the model_id does not match
+                a known pattern.
         """
         match self.model_id.split(":"):
             case ("hf", repo_id, filename):
@@ -96,7 +98,7 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
         But not working as intended.
         """
 
-        def noop_logger(*args, **kwargs):
+        def noop_logger(*_, **__):
             pass
 
         llama_log_set(llama_log_callback(noop_logger), ctypes.c_void_p())
@@ -110,7 +112,7 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
             )
 
             response = cast(CreateChatCompletionResponse, response)
-            result = response["choices"][0]["message"]["content"]  # type: ignore
+            result = response["choices"][0]["message"]["content"]
 
             return lx.inference.ScoredOutput(score=1.0, output=result)
         except Exception as e:
@@ -118,7 +120,7 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
                 f"llama-cpp error: {str(e)}", original=e
             ) from e
 
-    def infer(self, batch_prompts, **kwargs):
+    def infer(self, batch_prompts, **_):
         """Run inference on a batch of prompts.
 
         Args:
