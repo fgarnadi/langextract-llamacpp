@@ -39,8 +39,10 @@ config = lx.factory.ModelConfig(
     ),
 )
 
+model = lx.factory.create_model(config)
+
 result = lx.extract(
-    config=config,
+    model=model,
     text_or_documents="Your input text",
     prompt_description="Extract entities",
     examples=[...],
@@ -83,8 +85,10 @@ config = lx.factory.ModelConfig(
     ),
 )
 
+model = lx.factory.create_model(config)
+
 result = lx.extract(
-    config=config,
+    model=model,
     ...
 )
 ```

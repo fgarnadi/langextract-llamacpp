@@ -18,6 +18,9 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "jupyter>=1.1.1",
+    "langextract[openai]>=1.0.9",
+    "llama-cpp-python[server]>=0.3.16",
     "notebook>=7.4.5",
     "ruff>=0.12.12",
 ]
