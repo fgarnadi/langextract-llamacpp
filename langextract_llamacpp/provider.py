@@ -4,6 +4,7 @@ import ctypes
 from typing import cast
 
 import langextract as lx
+from langextract.core import base_model, exceptions, types
 from llama_cpp import (
     CreateChatCompletionResponse,
     Llama,
@@ -18,7 +19,7 @@ LLAMACPP_PATTERNS = (
 
 
 @lx.providers.registry.register(*LLAMACPP_PATTERNS, priority=10)
-class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
+class LlamaCppLanguageModel(base_model.BaseLanguageModel):
     """LangExtract provider for llama-cpp-python.
 
     This provider handles model IDs matching: ['^hf', '^file']
@@ -87,7 +88,7 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
                     **self._client_kwargs,
                 )
             case _:
-                raise lx.exceptions.InferenceConfigError("Can't find `model_id` configuration pattern.")
+                raise exceptions.InferenceConfigError("Can't find `model_id` configuration pattern.")
 
     def _suppress_logger(self):
         """Suppress llama-cpp logger.
@@ -101,7 +102,7 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
 
         llama_log_set(llama_log_callback(noop_logger), ctypes.c_void_p())
 
-    def _process_single_prompt(self, prompt: str) -> lx.inference.ScoredOutput:
+    def _process_single_prompt(self, prompt: str) -> types.ScoredOutput:
         """Process a single prompt and return a ScoredOutput."""
         try:
             response = self._client.create_chat_completion(
@@ -112,9 +113,9 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
             response = cast(CreateChatCompletionResponse, response)
             result = response["choices"][0]["message"]["content"]
 
-            return lx.inference.ScoredOutput(score=1.0, output=result)
+            return types.ScoredOutput(score=1.0, output=result)
         except Exception as e:
-            raise lx.exceptions.InferenceRuntimeError(f"llama-cpp error: {str(e)}", original=e) from e
+            raise exceptions.InferenceRuntimeError(f"llama-cpp error: {str(e)}", original=e) from e
 
     def infer(self, batch_prompts, **_):
         """Run inference on a batch of prompts.

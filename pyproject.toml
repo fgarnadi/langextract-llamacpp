@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "langextract-llamacpp"
-version = "0.1.0"
+version = "0.1.1"
 description = "LangExtract provider plugin for llama-cpp-python"
 readme = "README.md"
 authors = [{ name = "fgarnadi", email = "fajar.garnadi@gmail.com" }]
