@@ -1,0 +1,7 @@
+line-length = 120
+extend-include = ["*.ipynb"]
+exclude = [".venv", ".git", "build", "dist"]
+
+[format]
+quote-style = "double"
+skip-magic-trailing-comma = false

@@ -87,9 +87,7 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
                     **self._client_kwargs,
                 )
             case _:
-                raise lx.exceptions.InferenceConfigError(
-                    "Can't find `model_id` configuration pattern."
-                )
+                raise lx.exceptions.InferenceConfigError("Can't find `model_id` configuration pattern.")
 
     def _suppress_logger(self):
         """Suppress llama-cpp logger.
@@ -116,9 +114,7 @@ class LlamaCppLanguageModel(lx.inference.BaseLanguageModel):
 
             return lx.inference.ScoredOutput(score=1.0, output=result)
         except Exception as e:
-            raise lx.exceptions.InferenceRuntimeError(
-                f"llama-cpp error: {str(e)}", original=e
-            ) from e
+            raise lx.exceptions.InferenceRuntimeError(f"llama-cpp error: {str(e)}", original=e) from e
 
     def infer(self, batch_prompts, **_):
         """Run inference on a batch of prompts.

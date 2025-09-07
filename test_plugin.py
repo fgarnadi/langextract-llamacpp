@@ -41,17 +41,9 @@ for model_id in sample_ids:
         ok = provider_class.__name__ == PROVIDER_CLS_NAME
         status = "✓" if (ok or model_id == "unknown-model") else "✗"
         note = (
-            "expected"
-            if ok
-            else (
-                "expected (no provider)"
-                if model_id == "unknown-model"
-                else "unexpected provider"
-            )
+            "expected" if ok else ("expected (no provider)" if model_id == "unknown-model" else "unexpected provider")
         )
-        print(
-            f"   {status} {model_id} -> {provider_class.__name__ if ok else 'resolved'} {note}"
-        )
+        print(f"   {status} {model_id} -> {provider_class.__name__ if ok else 'resolved'} {note}")
     except Exception as e:
         if model_id == "unknown-model":
             print(f"   ✓ {model_id}: No provider found (expected)")
@@ -62,9 +54,7 @@ for model_id in sample_ids:
 print("\n3. Test inference with sample prompts")
 try:
     model_id = (
-        sample_ids[0]
-        if sample_ids[0] != "unknown-model"
-        else (_example_id(PATTERNS[0]) if PATTERNS else "test-model")
+        sample_ids[0] if sample_ids[0] != "unknown-model" else (_example_id(PATTERNS[0]) if PATTERNS else "test-model")
     )
     provider = LlamaCppLanguageModel(model_id=model_id)
     prompts = ["Test prompt 1", "Test prompt 2"]

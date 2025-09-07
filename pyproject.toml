@@ -16,6 +16,12 @@ dependencies = [
     "huggingface-hub>=0.34.4",
 ]
 
+[dependency-groups]
+dev = [
+    "notebook>=7.4.5",
+    "ruff>=0.12.12",
+]
+
 [project.entry-points."langextract.providers"]
 llamacpp = "langextract_llamacpp.provider:LlamaCppLanguageModel"
 
@@ -29,3 +35,12 @@ url = "https://test.pypi.org/simple/"
 publish-url = "https://test.pypi.org/legacy/"
 explicit = true
 default = false
+
+[tool.ruff]
+line-length = 120
+extend-include = ["*.ipynb"]
+exclude = [".venv", ".git", "build", "dist"]
+
+[tool.ruff.format]
+quote-style = "double"
+skip-magic-trailing-comma = false
