@@ -1,5 +1,7 @@
 # LangExtract llama-cpp-python Provider
 
+[![PyPI version](https://img.shields.io/pypi/v/langextract-llamacpp.svg?color=%2334D058)](https://pypi.org/project/langextract-llamacpp/)
+
 A provider plugin for LangExtract that supports llama-cpp-python models.
 
 ## Installation
@@ -92,10 +94,3 @@ result = lx.extract(
     ...
 )
 ```
-
-## Development
-
-1. Install in development mode: `uv pip install -e .`
-2. Run tests: `uv run test_plugin.py`
-3. Build package: `uv build`
-4. Publish to PyPI: `uv publish`
