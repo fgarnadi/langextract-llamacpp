@@ -1,32 +1,40 @@
+[project]
+name = "langextract-llamacpp"
+version = "0.1.2"
+description = "LangExtract provider plugin for llama-cpp-python"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [{ name = "fgarnadi", email = "fajar.garnadi@gmail.com" }]
+dependencies = [
+  "huggingface-hub<1.0.0",  # To suppress llama-cpp-python warning on >=1.0.0
+  "langextract>=1.1.0",
+  "llama-cpp-python>=0.3.16",
+]
+
+[project.entry-points."langextract.providers"]
+llamacpp = "langextract_llamacpp.provider"
+
+[dependency-groups]
+dev = [
+  "jupyter>=1.1.1",
+  "langextract[openai]>=1.1.0",
+  "llama-cpp-python[server]>=0.3.16",
+  "ruff>=0.14.5",
+]
+
 [build-system]
 requires = ["uv_build>=0.8.13,<0.9.0"]
 build-backend = "uv_build"
 
-[project]
-name = "langextract-llamacpp"
-version = "0.1.1"
-description = "LangExtract provider plugin for llama-cpp-python"
-readme = "README.md"
-authors = [{ name = "fgarnadi", email = "fajar.garnadi@gmail.com" }]
-requires-python = ">=3.10"
-license = "MIT"
-dependencies = [
-    "langextract>=1.0.0",
-    "llama-cpp-python>=0.3.16",
-    "huggingface-hub>=0.34.4",
-]
+[tool.ruff]
+line-length = 120
+extend-include = ["*.ipynb"]
+exclude = [".venv", ".git", "build", "dist"]
 
-[dependency-groups]
-dev = [
-    "jupyter>=1.1.1",
-    "langextract[openai]>=1.0.9",
-    "llama-cpp-python[server]>=0.3.16",
-    "notebook>=7.4.5",
-    "ruff>=0.12.12",
-]
-
-[project.entry-points."langextract.providers"]
-llamacpp = "langextract_llamacpp.provider:LlamaCppLanguageModel"
+[tool.ruff.format]
+quote-style = "double"
+skip-magic-trailing-comma = false
 
 [tool.uv.build-backend]
 module-name = "langextract_llamacpp"
@@ -38,12 +46,3 @@ url = "https://test.pypi.org/simple/"
 publish-url = "https://test.pypi.org/legacy/"
 explicit = true
 default = false
-
-[tool.ruff]
-line-length = 120
-extend-include = ["*.ipynb"]
-exclude = [".venv", ".git", "build", "dist"]
-
-[tool.ruff.format]
-quote-style = "double"
-skip-magic-trailing-comma = false

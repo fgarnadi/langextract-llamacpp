@@ -3,8 +3,8 @@
 import ctypes
 from typing import cast
 
-import langextract as lx
 from langextract.core import base_model, exceptions, types
+from langextract.providers import router
 from llama_cpp import (
     CreateChatCompletionResponse,
     Llama,
@@ -18,7 +18,7 @@ LLAMACPP_PATTERNS = (
 )
 
 
-@lx.providers.registry.register(*LLAMACPP_PATTERNS, priority=10)
+@router.register(*LLAMACPP_PATTERNS, priority=10)
 class LlamaCppLanguageModel(base_model.BaseLanguageModel):
     """LangExtract provider for llama-cpp-python.
 
