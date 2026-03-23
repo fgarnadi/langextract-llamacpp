@@ -1,15 +1,15 @@
 [project]
 name = "langextract-llamacpp"
 version = "0.1.2"
-description = "LangExtract provider plugin for llama-cpp-python"
+description = "LangExtract provider plugin for llama.cpp"
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 authors = [{ name = "fgarnadi", email = "fajar.garnadi@gmail.com" }]
 dependencies = [
   "huggingface-hub<1.0.0",  # To suppress llama-cpp-python warning on >=1.0.0
-  "langextract>=1.1.0",
-  "llama-cpp-python>=0.3.16",
+  "langextract>=1.2.0",
+  "llama-cpp-python>=0.3.17",
 ]
 
 [project.entry-points."langextract.providers"]
@@ -18,13 +18,13 @@ llamacpp = "langextract_llamacpp.provider"
 [dependency-groups]
 dev = [
   "jupyter>=1.1.1",
-  "langextract[openai]>=1.1.0",
-  "llama-cpp-python[server]>=0.3.16",
-  "ruff>=0.14.5",
+  "langextract[openai]>=1.2.0",
+  "llama-cpp-python[server]>=0.3.17",
+  "ruff>=0.15.7",
 ]
 
 [build-system]
-requires = ["uv_build>=0.8.13,<0.9.0"]
+requires = ["uv_build>=0.10.2,<0.11.0"]
 build-backend = "uv_build"
 
 [tool.ruff]
