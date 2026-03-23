@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/langextract-llamacpp.svg?color=%2334D058)](https://pypi.org/project/langextract-llamacpp/)
 
-A provider plugin for LangExtract that supports llama-cpp-python models.
+A provider plugin for [LangExtract](https://github.com/google/langextract) that supports [llama.cpp](https://github.com/abetlen/llama-cpp-python) models.
 
 ## Installation
 
@@ -69,7 +69,7 @@ config = lx.factory.ModelConfig(
 
 For `provider_kwargs` refer to [documentation](https://llama-cpp-python.readthedocs.io/en/latest/api-reference/#llama_cpp.Llama.__init__) for `Llama` class.
 
-For `completion_kwargs` refer to [documentation](https://llama-cpp-python.readthedocs.io/en/latest/api-reference/#llama_cpp.Llama.create_chat_completion) for `crate_chat_completion` method.
+For `completion_kwargs` refer to [documentation](https://llama-cpp-python.readthedocs.io/en/latest/api-reference/#llama_cpp.Llama.create_chat_completion) for `create_chat_completion` method.
 
 ## OpenAI compatible Web Server
 
